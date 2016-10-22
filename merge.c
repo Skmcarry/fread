@@ -3,7 +3,7 @@
 #include <string.h>
 #include <sys/time.h>
 
-int readaline_and_out(FILE *fin, FILE *fout);
+int readaline_and_reverse_out(FILE *fin, FILE *fout);
 
 int
 main(int argc, char *argv[])
@@ -35,13 +35,13 @@ main(int argc, char *argv[])
     gettimeofday(&before, NULL);
     do {
         if (!eof1) {
-            if (!readaline_and_out(file1, fout)) {
+            if (!readaline_and_reverse_out(file1, fout)) {
                 line1++; lineout++;
             } else
                 eof1 = 1;
         }
         if (!eof2) {
-            if (!readaline_and_out(file2, fout)) {
+            if (!readaline_and_reverse_out(file2, fout)) {
                 line2++; lineout++;
             } else
                 eof2 = 1;
@@ -67,22 +67,33 @@ leave0:
 /* Read a line from fin and write it to fout */
 /* return 1 if fin meets end of file */
 int
-readaline_and_out(FILE *fin, FILE *fout)
+readaline_and_reverse_out(FILE *fin, FILE *fout)
 {    
     int ch, count = 0;
+    char temp[100];
+    char tmp;
 
     do {
         if ((ch = fgetc(fin)) == EOF) {
             if (!count)
                 return 1;
             else {
-                fputc(0x0a, fout);
+                temp[count]=0x0a;
                 break;
             }
         }
-        fputc(ch, fout);
+        temp[count] = ch;
         count++;
     } while (ch != 0x0a);
+    
+    temp[count] = '\0';
+    
+    int n= strlen(temp);
+    
+    for(n;n>=0;n--){
+        tmp=temp[n];
+        fputc(tmp,fout);
+    }
     return 0;
 }
 
