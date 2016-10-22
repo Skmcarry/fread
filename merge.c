@@ -74,7 +74,7 @@ readaline_and_reverse_out(FILE *fin, FILE *fout)
     char tmp;
 
     do {
-        if ((ch = fgetc(fin)) == EOF) {
+        if ((fread(&ch,1,1,fin)) < 1) {
             if (!count)
                 return 1;
             else {
@@ -92,7 +92,7 @@ readaline_and_reverse_out(FILE *fin, FILE *fout)
     
     for(n;n>=0;n--){
         tmp=temp[n];
-        fputc(tmp,fout);
+        fwrite(&tmp,1,1,fout);
     }
     return 0;
 }
